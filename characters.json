@@ -34,5 +34,11 @@
         "level": 12,
         "class": "Dodger",
         "health": 8500
+    },
+    "player7": {
+	"name": "Holo",
+	"level": 12,
+	"class": "Water-Mage",
+	"health": 4500
     }
 }
