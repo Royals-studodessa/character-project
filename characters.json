@@ -1,0 +1,38 @@
+{
+    "player1": {
+        "name": "Royals",
+        "level": 14,
+        "class": "Earth-Mage",
+        "health": 6100
+    },
+    "player2": {
+        "name": "Zol",
+        "level": 13,
+        "class": "Critic",
+        "health": 9100
+    },
+    "player3": {
+        "name": "Big Problem",
+        "level": 12,
+        "class": "Dodger",
+        "health": 8100
+    },
+    "player4": {
+        "name": "Tempuous",
+        "level": 13,
+        "class": "Critical",
+        "health": 8500
+    },
+    "player5": {
+        "name": "Kartman",
+        "level": 11,
+        "class": "Warrior",
+        "health": 11500
+    },
+    "player6": {
+        "name": "White Rabbit",
+        "level": 12,
+        "class": "Dodger",
+        "health": 8500
+    }
+}
