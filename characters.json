@@ -36,9 +36,15 @@
         "health": 8500
     },
     "player7": {
-	"name": "Holo",
-	"level": 12,
-	"class": "Water-Mage",
-	"health": 4500
+        "name": "Holo",
+        "level": 12,
+        "class": "Water-Mage",
+        "health": 4500
+    },
+    "player8": {
+        "name": "Маньяк какой то",
+        "level": 12,
+        "class": "Критовик",
+        "health": 9990
     }
 }
