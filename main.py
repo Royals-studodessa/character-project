@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+from items import Weapon, Potion
+from character_class import Character
+from item_manager import ItemManager
 """main.py - Главная программа (ООП версия)"""
 
 # 1. ИМПОРТЫ
@@ -19,9 +22,10 @@ def show_menu():
     print("3. Удалить персонажа")
     print("4. Найти персонажа")
     print("5. Показать статистику")
-    print("6. Сохранить в файл")
-    print("7. Загрузить из файла")
-    print("8. Выход")
+    print("6. Показать все предметы")  # ← НОВОЕ!
+    print("7. Сохранить в файл")
+    print("8. Загрузить из файла")
+    print("9. Выход")
 
 
 # 4. ГЛАВНАЯ ФУНКЦИЯ
@@ -30,6 +34,12 @@ def main():
     
     # Создаём менеджер персонажей
     manager = CharacterManager()
+    
+    # Создаём менеджер предметов
+    item_manager = ItemManager()
+    
+    # Загружаем предметы из JSON
+    item_manager.load_from_json('weapons.json')
     
     # Загружаем данные при запуске
     data = load_from_file()
@@ -42,7 +52,10 @@ def main():
         manager.add("Zol", 13, "Critic", 9100)
         manager.add("Big Problem", 12, "Dodger", 8100)
         print("⚠️ Загружены тестовые персонажи")
-    
+    # ```Тестовый чар```    
+    # test_char = manager.characters.get("player1")    
+    # ... где-то после создания менеджера ...
+
     # Главный цикл программы
     while True:
         show_menu()
@@ -70,16 +83,19 @@ def main():
         
         elif choice == "5":
             manager.show_statistics()
-        
-        elif choice == "6":
-            save_to_file(manager.to_dict())
-        
+            
+        elif choice == "6":  # ← НОВОЕ!
+            item_manager.display_all()
+            
         elif choice == "7":
+            save_to_file(manager.to_dict())
+            
+        elif choice == "8":
             data = load_from_file()
             if data:
                 manager.from_dict(data)
-        
-        elif choice == "8":
+                
+        elif choice == "9":  # ← Теперь это выход
             save_to_file(manager.to_dict())
             print("\n👋 До свидания!")
             break

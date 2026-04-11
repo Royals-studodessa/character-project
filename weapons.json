@@ -1,0 +1,37 @@
+{
+    "sword1": {
+        "name": "Ржавый меч",
+        "weight": 5,
+        "value": 50,
+        "damage": 10,
+        "type": "weapon"
+    },
+    "sword2": {
+        "name": "Стальной клинок",
+        "weight": 4,
+        "value": 150,
+        "damage": 25,
+        "type": "weapon"
+    },
+    "sword3": {
+        "name": "Огненный меч",
+        "weight": 6,
+        "value": 500,
+        "damage": 50,
+        "type": "weapon"
+    },
+    "potion1": {
+        "name": "Малое зелье здоровья",
+        "weight": 1,
+        "value": 20,
+        "heal_amount": 50,
+        "type": "potion"
+    },
+    "potion2": {
+        "name": "Большое зелье здоровья",
+        "weight": 1,
+        "value": 50,
+        "heal_amount": 150,
+        "type": "potion"
+    }
+}

@@ -6,10 +6,31 @@ class Character:
     
     def __init__(self, name, level, char_class, health):
         self.name = name
-        self.level = level
+        self._level = level
         self.char_class = char_class
-        self.health = health
+        self._health = health
     
+    @property
+    def health(self):
+        
+        return self._health
+
+    @health.setter
+    def health(self, value):
+            
+        self._health =  max(0, value)    
+     
+    @property
+    def level(self):
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        # Уровень не может быть меньше 1
+        self._level = max(1, value)
+        # Если позже захочешь потолок (например, 100):
+        self._level = max(0, min(100, value))   
+                
     def display(self):
         """Показать информацию о персонаже"""
         print(f"🎯 {self.name}")
