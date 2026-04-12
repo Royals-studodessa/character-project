@@ -3,48 +3,56 @@
         "name": "Royals",
         "level": 14,
         "class": "Earth-Mage",
-        "health": 6100
+        "health": 6100,
+        "mana": 0
     },
     "player2": {
         "name": "Zol",
         "level": 13,
         "class": "Critic",
-        "health": 9100
+        "health": 9100,
+        "mana": 0
     },
     "player3": {
         "name": "Big Problem",
         "level": 12,
         "class": "Dodger",
-        "health": 8100
+        "health": 8100,
+        "mana": 0
     },
     "player4": {
         "name": "Tempuous",
         "level": 13,
         "class": "Critical",
-        "health": 8500
+        "health": 8500,
+        "mana": 0
     },
     "player5": {
         "name": "Kartman",
         "level": 11,
         "class": "Warrior",
-        "health": 11500
+        "health": 11500,
+        "mana": 0
     },
     "player6": {
         "name": "White Rabbit",
         "level": 12,
         "class": "Dodger",
-        "health": 8500
+        "health": 8500,
+        "mana": 0
     },
     "player7": {
         "name": "Holo",
         "level": 12,
         "class": "Water-Mage",
-        "health": 4500
+        "health": 4500,
+        "mana": 0
     },
     "player8": {
         "name": "Маньяк какой то",
         "level": 12,
         "class": "Критовик",
-        "health": 9990
+        "health": 9990,
+        "mana": 0
     }
 }

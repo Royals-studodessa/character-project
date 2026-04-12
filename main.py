@@ -55,6 +55,22 @@ def main():
     # ```Тестовый чар```    
     # test_char = manager.characters.get("player1")    
     # ... где-то после создания менеджера ...
+    # ТЕСТ маны
+# ТЕСТ СИСТЕМЫ СТАТОВ
+    # ТЕСТ РАСЧЁТНЫХ HP/МАНЫ
+    test_char = manager.characters.get("player1")
+    if test_char:
+        print("\n🧪 ТЕСТ DERIVED STATS:")
+        print(f"Исходно: HP {test_char.health}/{test_char.max_health}, Mana {test_char.mana}/{test_char.max_mana}")
+        
+        test_char.level_up()  # +5 очков
+        test_char.allocate_stat("endurance", 3)  # +30 к макс. HP
+        test_char.allocate_stat("wisdom", 2)     # +16 к макс. маны
+        
+        print(f"После прокачки: HP {test_char.health}/{test_char.max_health}, Mana {test_char.mana}/{test_char.max_mana}")
+        
+        # Попытка "читернуть" должна быть невозможна
+        # test_char.health = 9999  ← раскомментируй для проверки → выдаст AttributeError
 
     # Главный цикл программы
     while True:
@@ -70,7 +86,8 @@ def main():
             level = int(input("Уровень: ") or "1")
             char_class = input("Класс: ").strip() or "Novice"
             health = int(input("Здоровье: ") or "100")
-            manager.add(name, level, char_class, health)
+            mana = int(input("Мана: ") or "0")
+            manager.add(name, level, char_class, health, mana)
         
         elif choice == "3":
             manager.display_all()
