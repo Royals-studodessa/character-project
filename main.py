@@ -25,7 +25,63 @@ def show_menu():
     print("8. Загрузить из файла")
     print("9. Выход")
 
-
+def show_progression_menu(character):
+    """Меню прогрессии персонажа"""
+    while True:
+        print("\n" + "=" * 50)
+        print("📈 МЕНЮ ПРОГРЕССИИ")
+        print("=" * 50)
+        character.get_progression_info()
+        
+        print("\n1. Изучить новый навык")
+        if character.level >= 4 and not character.main_class:
+            print("2. Выбрать основной класс")
+        if character.level >= 10 and not character.subclass:
+            print("3. Выбрать специализацию")
+        print("0. Назад")
+        
+        choice = input("\nВыберите: ").strip()
+        
+        if choice == "1":
+            # Показываем доступные скиллы
+            available_skills = []
+            if character.main_class in MAIN_CLASSES:
+                for skill_name, skill_data in MAIN_CLASSES[character.main_class]["skills"].items():
+                    if skill_name not in character.learned_skills:
+                        available_skills.append((skill_name, skill_data))
+            
+            if not available_skills:
+                print("❌ Нет доступных навыков для изучения")
+                continue
+            
+            print("\n📚 Доступные навыки:")
+            for i, (name, data) in enumerate(available_skills, 1):
+                print(f"  {i}. {data['name']} (уровень {data.get('level_req', 0)})")
+            
+            skill_choice = input("Выберите навык: ").strip()
+            # Логика изучения...
+            
+        elif choice == "2" and character.level >= 4 and not character.main_class:
+            print("\n🎯 Выберите основной класс:")
+            for class_name, class_data in MAIN_CLASSES.items():
+                print(f"  • {class_name} (Требования: {class_data['stat_requirements']})")
+            
+            class_choice = input("Введите название класса: ").strip()
+            character.choose_main_class(class_choice)
+            
+        elif choice == "3" and character.level >= 10 and not character.subclass:
+            available = character.get_available_subclasses()
+            print("\n🎯 Выберите специализацию:")
+            for sub in available:
+                if sub in SUBCLASSES:
+                    print(f"  • {sub}: {SUBCLASSES[sub]['description']}")
+            
+            sub_choice = input("Введите название: ").strip()
+            character.choose_subclass(sub_choice)
+            
+        elif choice == "0":
+            break
+        
 # 4. ГЛАВНАЯ ФУНКЦИЯ
 def main():
     """Главная функция программы"""
@@ -45,124 +101,40 @@ def main():
         manager.from_dict(data)
         print("✅ Данные загружены")
     else:
-        # Тестовые персонажи если пусто
-        manager.add("Royals", 14, "Earth-Mage", 6100)
-        manager.add("Zol", 13, "Critic", 9100)
-        manager.add("Big Problem", 12, "Dodger", 8100)
-        print("⚠️ Загружены тестовые персонажи")
+        # Тестовые персонажи начинают как Newbie
+        manager.add("Royals", 3, "Newbie", 6100, 50)
+        manager.add("Zol", 2, "Newbie", 9100, 50)
+        manager.add("Big Problem", 1, "Newbie", 8100, 50)
+        print("⚠️ Загружены тестовые персонажи (Newbie)")
+        
     # ```Тестовый чар```    
-    # test_char = manager.characters.get("player1")    
-    # ... где-то после создания менеджера ...
-    # ТЕСТ маны
-# ТЕСТ СИСТЕМЫ СТАТОВ
-    # ТЕСТ РАСЧЁТНЫХ HP/МАНЫ
-    
+    # В main.py, перед циклом
     test_char = manager.characters.get("player1")
+
     if test_char:
-        print("\n🧪 ТЕСТ DERIVED STATS:")
-        print(f"Исходно: HP {test_char.health}/{test_char.max_health}, Mana {test_char.mana}/{test_char.max_mana}")
+        # Уровень 1-3: Newbie
+        print("\n📝 Уровень 1-3: Newbie")
+        test_char.level = 3
+        test_char.get_progression_info()
         
-        test_char.level_up()  # +5 очков
-        test_char.allocate_stat("endurance", 3)  # +30 к макс. HP
-        test_char.allocate_stat("wisdom", 2)     # +16 к макс. маны
+        # Уровень 4: Выбор класса
+        print("\n📝 Уровень 4: Выбор класса")
+        test_char.level = 4
+        test_char._stats["strength"] = 10
+        test_char._stats["endurance"] = 10
+        test_char.choose_main_class("Warrior")
         
-        print(f"После прокачки: HP {test_char.health}/{test_char.max_health}, Mana {test_char.mana}/{test_char.max_mana}")
-        
-        # Попытка "читернуть" должна быть невозможна
-        # test_char.health = 9999  ← раскомментируй для проверки → выдаст AttributeError
-    test_sword = Weapon("Ржавый клинок", 5, 50, 15)
-    test_sword.equip(test_char)
-    print(f"Урон с мечом: {test_char.damage}")  # Должно вырасти на 15
-    test_sword.unequip(test_char)
-    print(f"Урон без меча: {test_char.damage}")  # Вернётся к базовому
-    test_char = manager.characters.get("player1")
-    if test_char:
-    # Создаём 3 свитка
-        s1 = Scroll("Огненный шар", 0, 50, "damage", 80)
-        s2 = Scroll("Исцеление", 0, 30, "heal", 60)
-        s3 = Scroll("Ледяная стрела", 0, 40, "damage", 70)
-    
-    # 1. Добавляем в рюкзак
-    test_char.scroll_inventory.add_scroll(s1)
-    test_char.scroll_inventory.add_scroll(s2)
-    test_char.scroll_inventory.show()
-    
-    # 2. Экипируем один
-    test_char.scroll_inventory.equip_scroll(s1)
-    test_char.scroll_inventory.show()
-    
-    # 3. Используем
-    test_char.scroll_inventory.use_scroll(s1, test_char)
-    test_char.scroll_inventory.show()
-    
-    # ТЕСТ КУЛДАУНОВ
-    if test_char:
-        print("\n🧪 ТЕСТ COOLDOWNS:")
-        
-        # Проверяем готовность
-        print(f"Огненный шар готов? {test_char.cooldowns.is_ready('Огненный шар')}")
-        
-        # Запускаем кулдаун
-        test_char.cooldowns.start("Огненный шар", 3)
-        
-        # Проверяем снова
-        print(f"Теперь готов? {test_char.cooldowns.is_ready('Огненный шар')}")
-        
-        # Показываем кулдауны
-        test_char.cooldowns.show()
-        
-        # Имитируем ходы
-        print("\n--- Ход 1 ---")
-        test_char.cooldowns.tick()
-        test_char.cooldowns.show()
-        
-        print("\n--- Ход 2 ---")
-        test_char.cooldowns.tick()
-        test_char.cooldowns.show()
-        
-        print("\n--- Ход 3 ---")
-        test_char.cooldowns.tick()
-        test_char.cooldowns.show()
-        
-        # Теперь должно быть готово
-        print(f"После 3 ходов готов? {test_char.cooldowns.is_ready('Огненный шар')}")
-    # 4. Тест лимита (попробуй добавить 12 свитков)
-        # ТЕСТ НАВЫКОВ
-    if test_char:
-        print("\n🧪 ТЕСТ SKILL + COOLDOWN:")
-        
-        # Создаем мощный удар "Удар Грома"
-        # Стоимость: 20 маны, Кулдаун: 3 хода, Урон: 100
-        thunder_strike = Skill("Удар Грома", mana_cost=20, cooldown_turns=3, damage=100)
-        
-        # Враг (просто объект с health)
-        enemy = Character("Орк", 1, "Warrior", 500, 50)
-        
-        # Попытка использовать
-        print("\n--- Попытка 1 (Успех) ---")
-        thunder_strike.use(test_char, enemy)
-        
-        print("\n--- Попытка 2 (Кулдаун) ---")
-        thunder_strike.use(test_char, enemy)
-        
-        # Проматываем ходы
-        print("\n--- Промотка хода ---")
-        test_char.cooldowns.tick()
-        test_char.cooldowns.tick()
-        
-        print("\n--- Попытка 3 (Всё ещё кулдаун) ---")
-        thunder_strike.use(test_char, enemy) # Всё ещё на КД
-        
-        print("\n--- Промотка последнего хода ---")
-        test_char.cooldowns.tick()
-        
-        print("\n--- Попытка 4 (Готово!) ---")
-        thunder_strike.use(test_char, enemy)
-    
+        # Уровень 10: Специализация
+        print("\n📝 Уровень 10: Специализация")
+        test_char.level = 10
+        test_char._stats["endurance"] = 16
+        test_char.learned_skills.append("shield_bash")
+        test_char.choose_subclass("Tank")
+     
     # Главный цикл программы
     while True:
         show_menu()
-        choice = input("\nВыберите (1-8): ").strip()
+        choice = input("\nВыберите (1-9): ").strip()
         
         if choice == "1":
             manager.display_all()

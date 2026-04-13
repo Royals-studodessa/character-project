@@ -1,5 +1,7 @@
 from systems import ScrollInventory, CooldownTracker
 import time
+from progression import NEWBIE_SKILLS, MAIN_CLASSES, SUBCLASSES
+
 # character.py - Классы для управления персонажами
 BASE_STATS = {
     "strength": 10,       # Физ. урон, грузоподъёмность
@@ -14,7 +16,7 @@ BASE_STATS = {
 class Character:
     """Класс одного персонажа"""
     
-    def __init__(self, name, level, char_class, health, mana):
+    def __init__(self, name, level, char_class="Newbie", health=100, mana=50):
         self.name = name
         self._level = level
         self.char_class = char_class
@@ -27,6 +29,16 @@ class Character:
         self._current_mana = min(mana, self.max_mana)
         self.cooldowns = CooldownTracker()
         self.last_activity_time = time.time()  # ← Запоминаем время создания/загрузки
+        # Система прогрессии
+        self.char_class = char_class  # "Newbie", "Warrior", "Tank", etc.
+        self.main_class = None  # Устанавливается на уровне 4
+        self.subclass = None    # Устанавливается на уровне 10
+        self.learned_skills = []  # Список изученных скиллов
+        self.skill_points = 0   # Очки навыков (даются за уровень)
+        
+        # Загружаем начальные скиллы
+        if char_class == "Newbie":
+            self.learned_skills = ["basic_attack"]
    
         # --- РАСЧЁТНЫЕ МАКСИМУМЫ ---
     @property
@@ -83,7 +95,6 @@ class Character:
         print(f"   Points: {self.stat_points}")
     
     def to_dict(self):
-        """Преобразовать в словарь"""
         return {
             "name": self.name,
             "level": self.level,
@@ -92,6 +103,8 @@ class Character:
             "mana": self.mana,
             "stat_points": self.stat_points,
             "stats": self._stats,
+            "main_class": self.main_class,  # ← НОВОЕ
+            "learned_skills": self.learned_skills,  # ← НОВОЕ
             "last_activity_time": self.last_activity_time
         }
     
@@ -100,17 +113,24 @@ class Character:
         char = cls(
             name=data["name"],
             level=data["level"],
-            char_class=data["class"],
+            char_class=data.get("class", "Newbie"),  # ← Дефолт Newbie
             health=data.get("health", 100),
             mana=data.get("mana", 50)
         )
         # Восстанавливаем статы или берём базовые (для старых сохранений)
         char._stats = data.get("stats", BASE_STATS.copy())
-        char.stat_points = data.get("stat_points", 0)
-        
+        char.stat_points = data.get("stat_points", 0)       
         char.last_activity_time = data.get("last_activity_time", time.time())
-        char.regenerate_resources()  # ← Вызов здесь!
         
+            # Восстанавливаем прогресс
+        char.main_class = data.get("main_class")
+        char.learned_skills = data.get("learned_skills", [])
+            
+                # Если main_class уже выбран, используем его
+        if char.main_class:
+            char.char_class = char.main_class
+            
+        char.regenerate_resources()  # ← Вызов здесь! 
         return char
     
     def take_damage(self, damage):
@@ -189,3 +209,200 @@ class Character:
             
         # Сбрасываем таймер
         self.last_activity_time = now
+    
+    def can_choose_main_class(self):
+        """Проверяет, можно ли выбрать основной класс"""
+        if self.level < 4:
+            print(f"❌ Основной класс доступен с 4 уровня (сейчас {self.level})")
+            return False
+        if self.main_class:
+            print(f"❌ Основной класс уже выбран: {self.main_class}")
+            return False
+        return True
+    
+    def choose_main_class(self, class_name):
+        """Выбор основного класса (Warrior/Mage/Archer)"""
+        if not self.can_choose_main_class():
+            return False
+        
+        if class_name not in MAIN_CLASSES:
+            print(f"❌ Неизвестный класс: {class_name}")
+            print(f"Доступны: {', '.join(MAIN_CLASSES.keys())}")
+            return False
+        
+        # Проверяем требования к статам
+        reqs = MAIN_CLASSES[class_name]["stat_requirements"]
+        for stat, value in reqs.items():
+            if self._stats.get(stat, 0) < value:
+                print(f"❌ Не хватает {stat}: нужно {value}, есть {self._stats.get(stat, 0)}")
+                return False
+        
+        # Применяем класс
+        self.main_class = class_name
+        self.char_class = class_name  # ← ОБЯЗАТЕЛЬНО обновляем метку!
+        print(f"✅ Класс изменён на: {self.char_class}")
+                
+        # Даем первый скилл класса
+        first_skill = list(MAIN_CLASSES[class_name]["skills"].keys())[0]
+        self.learned_skills.append(first_skill)
+        
+        print(f"✅ Выбран класс: {class_name}!")
+        print(f"📚 Изучен навык: {MAIN_CLASSES[class_name]['skills'][first_skill]['name']}")
+        return True
+    
+    def can_learn_skill(self, skill_name):
+        """Проверяет, можно ли изучить навык"""
+        # Определяем, к какому классу относится скилл
+        skill_class = None
+        skill_data = None
+        
+        # Ищем в скиллах основного класса
+        if self.main_class and self.main_class in MAIN_CLASSES:
+            if skill_name in MAIN_CLASSES[self.main_class]["skills"]:
+                skill_class = self.main_class
+                skill_data = MAIN_CLASSES[self.main_class]["skills"][skill_name]
+        
+        # Если не нашли, проверяем Newbie скиллы
+        if not skill_data and skill_name in NEWBIE_SKILLS:
+            skill_class = "Newbie"
+            skill_data = NEWBIE_SKILLS[skill_name]
+        
+        if not skill_data:
+            print(f"❌ Навык '{skill_name}' не найден или недоступен вашему классу")
+            return False
+        
+        # Проверяем уровень
+        if self.level < skill_data.get("level_req", 0):
+            print(f"❌ Нужен уровень {skill_data['level_req']} (сейчас {self.level})")
+            return False
+        
+        # Проверяем, не изучен ли уже
+        if skill_name in self.learned_skills:
+            print(f"⚠️ Навык '{skill_name}' уже изучен")
+            return False
+        
+        # Проверяем требования к статам
+        if "stat_req" in skill_data:
+            for stat, value in skill_data["stat_req"].items():
+                if self._stats.get(stat, 0) < value:
+                    print(f"❌ Не хватает {stat}: нужно {value}, есть {self._stats.get(stat, 0)}")
+                    return False
+        
+        # Проверяем, не мультиклассинг ли (если скилл из другого основного класса)
+        if skill_class != "Newbie" and skill_class != self.main_class:
+            print(f"❌ Нельзя изучать навыки класса {skill_class} будучи {self.main_class}")
+            return False
+        
+        return True
+    
+    def learn_skill(self, skill_name):
+        """Изучить навык"""
+        if not self.can_learn_skill(skill_name):
+            return False
+        
+        self.learned_skills.append(skill_name)
+        
+        # Определяем источник скилла
+        if skill_name in NEWBIE_SKILLS:
+            skill_data = NEWBIE_SKILLS[skill_name]
+        elif self.main_class in MAIN_CLASSES:
+            skill_data = MAIN_CLASSES[self.main_class]["skills"].get(skill_name, {})
+        else:
+            skill_data = {}
+        
+        print(f"✅ Изучен навык: {skill_data.get('name', skill_name)}")
+        return True
+    
+    def can_choose_subclass(self):
+        """Проверяет, можно ли выбрать специализацию"""
+        if self.level < 10:
+            print(f"❌ Специализация доступна с 10 уровня (сейчас {self.level})")
+            return False
+        if self.subclass:
+            print(f"❌ Специализация уже выбрана: {self.subclass}")
+            return False
+        if not self.main_class:
+            print("❌ Сначала выберите основной класс")
+            return False
+        return True
+    
+    def get_available_subclasses(self):
+        """Получает доступные подклассы для текущего основного класса"""
+        if not self.main_class or self.main_class not in MAIN_CLASSES:
+            return []
+        
+        available = []
+        for subclass_name in MAIN_CLASSES[self.main_class]["subclasses"]:
+            if subclass_name in SUBCLASSES:
+                available.append(subclass_name)
+        
+        return available
+    
+    def choose_subclass(self, subclass_name):
+        """Выбор специализации"""
+        if not self.can_choose_subclass():
+            return False
+        
+        if subclass_name not in SUBCLASSES:
+            print(f"❌ Неизвестная специализация: {subclass_name}")
+            return False
+        
+        subclass_data = SUBCLASSES[subclass_name]
+        
+        # Проверяем требования к статам
+        for stat, value in subclass_data["stat_requirements"].items():
+            if self._stats.get(stat, 0) < value:
+                print(f"❌ Не хватает {stat}: нужно {value}, есть {self._stats.get(stat, 0)}")
+                return False
+        
+        # Проверяем требуемые скиллы
+        for req_skill in subclass_data.get("required_skills", []):
+            if req_skill not in self.learned_skills:
+                print(f"❌ Требуется навык: {req_skill}")
+                return False
+        
+        # Применяем специализацию
+        self.subclass = subclass_name
+        self.char_class = subclass_name  # ← ОБЯЗАТЕЛЬНО обновляем метку!
+        print(f"✅ Специализация изменена на: {self.char_class}")
+        
+        # Применяем бонусы к статам
+        for stat, bonus in subclass_data.get("bonus_stats", {}).items():
+            self._stats[stat] = self._stats.get(stat, 0) + bonus
+        
+        print(f"✅ Выбрана специализация: {subclass_name}!")
+        print(f"📖 {subclass_data['description']}")
+        print(f"📈 Бонусы к характеристикам: {subclass_data.get('bonus_stats', {})}")
+        return True
+    
+    def get_progression_info(self):
+        """Показывает информацию о прогрессии персонажа"""
+        print(f"\n📊 ПРОГРЕССИЯ: {self.name}")
+        print(f"   Уровень: {self.level}")
+        print(f"   Класс: {self.char_class}")
+        if self.main_class:
+            print(f"   Основная ветка: {self.main_class}")
+        if self.subclass:
+            print(f"   Специализация: {self.subclass}")
+        
+        print(f"\n📚 Изученные навыки ({len(self.learned_skills)}):")
+        for skill in self.learned_skills:
+            # Ищем данные скилла
+            skill_name = skill
+            if skill in NEWBIE_SKILLS:
+                skill_name = NEWBIE_SKILLS[skill]["name"]
+            elif self.main_class and self.main_class in MAIN_CLASSES:
+                if skill in MAIN_CLASSES[self.main_class]["skills"]:
+                    skill_name = MAIN_CLASSES[self.main_class]["skills"][skill]["name"]
+            print(f"   • {skill_name}")
+        
+        # Показываем доступные опции
+        if self.level >= 4 and not self.main_class:
+            print(f"\n🎯 Доступен выбор основного класса!")
+            print(f"   Варианты: {', '.join(MAIN_CLASSES.keys())}")
+        
+        if self.level >= 10 and not self.subclass and self.main_class:
+            available = self.get_available_subclasses()
+            if available:
+                print(f"\n🎯 Доступен выбор специализации!")
+                print(f"   Варианты: {', '.join(available)}")
