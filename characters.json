@@ -3,8 +3,8 @@
         "name": "Royals",
         "level": 10,
         "class": "Warrior",
-        "health": 460,
-        "mana": 472,
+        "health": 400,
+        "mana": 264,
         "stat_points": 0,
         "stats": {
             "strength": 10,
@@ -20,7 +20,7 @@
             "power_strike",
             "shield_bash"
         ],
-        "last_activity_time": 1776083819.3403502
+        "last_activity_time": 1776104561.2709744
     },
     "player2": {
         "name": "Zol",
@@ -40,7 +40,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.3404772
+        "last_activity_time": 1776104561.2709904
     },
     "player3": {
         "name": "Big Problem",
@@ -60,7 +60,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.3406012
+        "last_activity_time": 1776104561.2709982
     },
     "player4": {
         "name": "Tempuous",
@@ -80,7 +80,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.3407242
+        "last_activity_time": 1776104561.2710047
     },
     "player5": {
         "name": "Kartman",
@@ -100,7 +100,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.3408508
+        "last_activity_time": 1776104561.2710114
     },
     "player6": {
         "name": "White Rabbit",
@@ -120,7 +120,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.340974
+        "last_activity_time": 1776104561.2710178
     },
     "player7": {
         "name": "Holo",
@@ -140,7 +140,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.3411088
+        "last_activity_time": 1776104561.2710235
     },
     "player8": {
         "name": "Маньяк какой то",
@@ -160,7 +160,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.341261
+        "last_activity_time": 1776104561.271036
     },
     "player9": {
         "name": "Cubarulit",
@@ -180,7 +180,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.341381
+        "last_activity_time": 1776104561.271042
     },
     "player10": {
         "name": "Heropontij",
@@ -200,26 +200,6 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776083819.341485
-    },
-    "player11": {
-        "name": "Тест без сохранения",
-        "level": 11,
-        "class": "Mage",
-        "health": 420,
-        "mana": 279,
-        "stat_points": 0,
-        "stats": {
-            "strength": 10,
-            "agility": 10,
-            "intuition": 8,
-            "endurance": 10,
-            "intelligence": 8,
-            "wisdom": 8,
-            "spirituality": 8
-        },
-        "main_class": null,
-        "learned_skills": [],
-        "last_activity_time": 1776083819.3416047
+        "last_activity_time": 1776104561.2710483
     }
 }

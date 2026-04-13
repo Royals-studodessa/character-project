@@ -110,26 +110,6 @@ def main():
     # ```Тестовый чар```    
     # В main.py, перед циклом
     test_char = manager.characters.get("player1")
-
-    if test_char:
-        # Уровень 1-3: Newbie
-        print("\n📝 Уровень 1-3: Newbie")
-        test_char.level = 3
-        test_char.get_progression_info()
-        
-        # Уровень 4: Выбор класса
-        print("\n📝 Уровень 4: Выбор класса")
-        test_char.level = 4
-        test_char._stats["strength"] = 10
-        test_char._stats["endurance"] = 10
-        test_char.choose_main_class("Warrior")
-        
-        # Уровень 10: Специализация
-        print("\n📝 Уровень 10: Специализация")
-        test_char.level = 10
-        test_char._stats["endurance"] = 16
-        test_char.learned_skills.append("shield_bash")
-        test_char.choose_subclass("Tank")
      
     # Главный цикл программы
     while True:
@@ -170,9 +150,7 @@ def main():
             data = load_from_file()
             if data:
                 manager.from_dict(data)
-                for char in manager.characters.values():
-                    char.regenerate_mana()
-                
+                        
         elif choice == "9":
             save_choice = input("\n💾 Сохранить прогресс перед выходом? (y/n): ").strip().lower()
             if save_choice in ('y', 'да'):
