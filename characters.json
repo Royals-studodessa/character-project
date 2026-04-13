@@ -1,58 +1,155 @@
 {
     "player1": {
         "name": "Royals",
-        "level": 14,
+        "level": 19,
         "class": "Earth-Mage",
-        "health": 6100,
-        "mana": 0
+        "health": 440,
+        "mana": 80,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 25,
+            "intelligence": 8,
+            "wisdom": 18,
+            "spirituality": 8
+        }
     },
     "player2": {
         "name": "Zol",
         "level": 13,
         "class": "Critic",
-        "health": 9100,
-        "mana": 0
+        "health": 460,
+        "mana": 0,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
     },
     "player3": {
         "name": "Big Problem",
         "level": 12,
         "class": "Dodger",
-        "health": 8100,
-        "mana": 0
+        "health": 440,
+        "mana": 0,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
     },
     "player4": {
         "name": "Tempuous",
         "level": 13,
         "class": "Critical",
-        "health": 8500,
-        "mana": 0
+        "health": 460,
+        "mana": 0,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
     },
     "player5": {
         "name": "Kartman",
         "level": 11,
         "class": "Warrior",
-        "health": 11500,
-        "mana": 0
+        "health": 420,
+        "mana": 0,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
     },
     "player6": {
         "name": "White Rabbit",
         "level": 12,
         "class": "Dodger",
-        "health": 8500,
-        "mana": 0
+        "health": 440,
+        "mana": 0,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
     },
     "player7": {
         "name": "Holo",
         "level": 12,
         "class": "Water-Mage",
-        "health": 4500,
-        "mana": 0
+        "health": 440,
+        "mana": 0,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
     },
     "player8": {
         "name": "Маньяк какой то",
         "level": 12,
         "class": "Критовик",
-        "health": 9990,
-        "mana": 0
+        "health": 440,
+        "mana": 0,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
+    },
+    "player9": {
+        "name": "Cubarulit",
+        "level": 12,
+        "class": "Fire-Mage",
+        "health": 440,
+        "mana": 294,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        }
     }
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from items import Weapon, Potion
+from items import Weapon, Potion, Scroll
 from character_class import Character
 from item_manager import ItemManager
 """main.py - Главная программа (ООП версия)"""
@@ -58,6 +58,7 @@ def main():
     # ТЕСТ маны
 # ТЕСТ СИСТЕМЫ СТАТОВ
     # ТЕСТ РАСЧЁТНЫХ HP/МАНЫ
+    
     test_char = manager.characters.get("player1")
     if test_char:
         print("\n🧪 ТЕСТ DERIVED STATS:")
@@ -71,7 +72,32 @@ def main():
         
         # Попытка "читернуть" должна быть невозможна
         # test_char.health = 9999  ← раскомментируй для проверки → выдаст AttributeError
-
+    test_sword = Weapon("Ржавый клинок", 5, 50, 15)
+    test_sword.equip(test_char)
+    print(f"Урон с мечом: {test_char.damage}")  # Должно вырасти на 15
+    test_sword.unequip(test_char)
+    print(f"Урон без меча: {test_char.damage}")  # Вернётся к базовому
+    test_char = manager.characters.get("player1")
+    if test_char:
+    # Создаём 3 свитка
+        s1 = Scroll("Огненный шар", 0, 50, "damage", 80)
+        s2 = Scroll("Исцеление", 0, 30, "heal", 60)
+        s3 = Scroll("Ледяная стрела", 0, 40, "damage", 70)
+    
+    # 1. Добавляем в рюкзак
+    test_char.scroll_inventory.add_scroll(s1)
+    test_char.scroll_inventory.add_scroll(s2)
+    test_char.scroll_inventory.show()
+    
+    # 2. Экипируем один
+    test_char.scroll_inventory.equip_scroll(s1)
+    test_char.scroll_inventory.show()
+    
+    # 3. Используем
+    test_char.scroll_inventory.use_scroll(s1, test_char)
+    test_char.scroll_inventory.show()
+    
+    # 4. Тест лимита (попробуй добавить 12 свитков)
     # Главный цикл программы
     while True:
         show_menu()

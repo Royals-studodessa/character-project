@@ -18,6 +18,9 @@ class Character:
         self.char_class = char_class
         self._stats = BASE_STATS.copy()
         self.stat_points = 0  # Свободные очки для распределения
+        self.base_damage = 5
+        self._equip_damage_bonus = 0  # ← Сумма урона от всей экипировки
+        self.scroll_inventory = ScrollInventory(max_slots=10)
         self._current_health = min(health, self.max_health)
         self._current_mana = min(mana, self.max_mana)
    
@@ -38,6 +41,13 @@ class Character:
         equip_bonus = getattr(self, "_equip_mana_bonus", 0)
         return base + level_bonus + wisdom_bonus + equip_bonus
 
+    @property
+    def damage(self):
+        """Итоговый физический урон: база + сила + уровень"""
+        strength_bonus = self._stats.get("strength", 0) * 2
+        level_bonus = self.level * 1  # self.level уже через @property
+        return self.base_damage + strength_bonus + level_bonus + self._equip_damage_bonus
+    
     # --- ТЕКУЩИЕ ЗНАЧЕНИЯ (только чтение) ---
     @property
     def health(self):
@@ -138,10 +148,10 @@ class CharacterManager:
         """Инициализация менеджера (пустая база)"""
         self.characters = {}
     
-    def add(self, name, level, char_class, health):
+    def add(self, name, level, char_class, health, mana):
         """Добавить нового персонажа"""
         new_id = f"player{len(self.characters) + 1}"
-        new_char = Character(name, level, char_class, health)
+        new_char = Character(name, level, char_class, health, mana)
         self.characters[new_id] = new_char
         print(f"\n✅ Персонаж {name} добавлен под ID: {new_id}")
         return new_id
@@ -243,3 +253,64 @@ class CharacterManager:
             char_id: Character.from_dict(char_data) 
             for char_id, char_data in data.items()
         }
+     
+class ScrollInventory:
+    """Инвентарь свитков с ограничением слотов на поясе"""
+    
+    def __init__(self, max_slots=10):
+        self.max_slots = max_slots
+        self.storage = []   # Хранилище (БЕЗ лимита!)
+        self.equipped = []  # Пояс (лимит 10)
+    
+    def add_scroll(self, scroll):
+        """Добавить свиток в хранилище (без лимита)"""
+        self.storage.append(scroll)  # ← ИСПРАВЛЕНО: добавляем в storage
+        print(f"📜 Свиток '{scroll.name}' добавлен в хранилище")
+        return True  # ← Да, return нужен для проверки успеха
+    
+    def equip_scroll(self, scroll):
+        """Переложить свиток из хранилища на пояс"""
+        # Проверяем, есть ли в хранилище
+        if scroll not in self.storage:
+            print(f"❌ Свиток '{scroll.name}' не найден в хранилище")
+            return False
+        
+        # Проверяем лимит пояса
+        if len(self.equipped) >= self.max_slots:
+            print(f"❌ Все слоты экипировки заняты! (макс. {self.max_slots})")
+            return False
+        
+        # Перекладываем
+        self.storage.remove(scroll)
+        self.equipped.append(scroll)
+        print(f"✅ Свиток '{scroll.name}' экипирован в пояс")
+        return True
+    
+    def use_scroll(self, scroll, target):
+        """Использовать свиток с пояса"""
+        if scroll not in self.equipped:
+            print(f"❌ Свиток '{scroll.name}' не на поясе!")
+            return False
+        
+        # Применяем эффект
+        scroll.use(target)
+        
+        # Свиток исчезает
+        self.equipped.remove(scroll)
+        print(f"🔥 Свиток '{scroll.name}' использован и исчез!")
+        return True
+    
+    def show(self):
+        """Показать состояние инвентаря"""
+        print(f"\n📚 СВИТКИ: {len(self.equipped)}/{self.max_slots} на поясе")
+        print(f"📦 В хранилище: {len(self.storage)}")
+        
+        if self.equipped:
+            print("\n⚡ На поясе:")
+            for s in self.equipped:
+                print(f"   • {s.name}")
+        
+        if self.storage:
+            print("\n📦 В хранилище:")
+            for s in self.storage:
+                print(f"   • {s.name}")   

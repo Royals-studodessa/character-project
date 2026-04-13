@@ -22,7 +22,7 @@ class ItemManager:
                         name=item_data['name'],
                         weight=item_data['weight'],
                         value=item_data['value'],
-                        damage=item_data['damage']
+                        damage_bonus=item_data['damage']
                     )
                 elif item_data.get('type') == 'potion':
                     self.items[item_id] = Potion(
