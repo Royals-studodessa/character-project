@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
-from items import Weapon, Potion, Scroll
-from character_class import Character
-from item_manager import ItemManager
-"""main.py - Главная программа (ООП версия)"""
-
 # 1. ИМПОРТЫ
-from character_class import CharacterManager
+from manager import CharacterManager
 from utils import save_to_file, load_from_file
+from items import Weapon, Potion, Scroll
+from character import Character
+from item_manager import ItemManager
+from skills import Skill
 
 
 # 2. КОНСТАНТЫ
@@ -97,7 +95,70 @@ def main():
     test_char.scroll_inventory.use_scroll(s1, test_char)
     test_char.scroll_inventory.show()
     
+    # ТЕСТ КУЛДАУНОВ
+    if test_char:
+        print("\n🧪 ТЕСТ COOLDOWNS:")
+        
+        # Проверяем готовность
+        print(f"Огненный шар готов? {test_char.cooldowns.is_ready('Огненный шар')}")
+        
+        # Запускаем кулдаун
+        test_char.cooldowns.start("Огненный шар", 3)
+        
+        # Проверяем снова
+        print(f"Теперь готов? {test_char.cooldowns.is_ready('Огненный шар')}")
+        
+        # Показываем кулдауны
+        test_char.cooldowns.show()
+        
+        # Имитируем ходы
+        print("\n--- Ход 1 ---")
+        test_char.cooldowns.tick()
+        test_char.cooldowns.show()
+        
+        print("\n--- Ход 2 ---")
+        test_char.cooldowns.tick()
+        test_char.cooldowns.show()
+        
+        print("\n--- Ход 3 ---")
+        test_char.cooldowns.tick()
+        test_char.cooldowns.show()
+        
+        # Теперь должно быть готово
+        print(f"После 3 ходов готов? {test_char.cooldowns.is_ready('Огненный шар')}")
     # 4. Тест лимита (попробуй добавить 12 свитков)
+        # ТЕСТ НАВЫКОВ
+    if test_char:
+        print("\n🧪 ТЕСТ SKILL + COOLDOWN:")
+        
+        # Создаем мощный удар "Удар Грома"
+        # Стоимость: 20 маны, Кулдаун: 3 хода, Урон: 100
+        thunder_strike = Skill("Удар Грома", mana_cost=20, cooldown_turns=3, damage=100)
+        
+        # Враг (просто объект с health)
+        enemy = Character("Орк", 1, "Warrior", 500, 50)
+        
+        # Попытка использовать
+        print("\n--- Попытка 1 (Успех) ---")
+        thunder_strike.use(test_char, enemy)
+        
+        print("\n--- Попытка 2 (Кулдаун) ---")
+        thunder_strike.use(test_char, enemy)
+        
+        # Проматываем ходы
+        print("\n--- Промотка хода ---")
+        test_char.cooldowns.tick()
+        test_char.cooldowns.tick()
+        
+        print("\n--- Попытка 3 (Всё ещё кулдаун) ---")
+        thunder_strike.use(test_char, enemy) # Всё ещё на КД
+        
+        print("\n--- Промотка последнего хода ---")
+        test_char.cooldowns.tick()
+        
+        print("\n--- Попытка 4 (Готово!) ---")
+        thunder_strike.use(test_char, enemy)
+    
     # Главный цикл программы
     while True:
         show_menu()
@@ -137,9 +198,16 @@ def main():
             data = load_from_file()
             if data:
                 manager.from_dict(data)
+                for char in manager.characters.values():
+                    char.regenerate_mana()
                 
-        elif choice == "9":  # ← Теперь это выход
-            save_to_file(manager.to_dict())
+        elif choice == "9":
+            save_choice = input("\n💾 Сохранить прогресс перед выходом? (y/n): ").strip().lower()
+            if save_choice in ('y', 'да'):
+                save_to_file(manager.to_dict())
+                print("✅ Прогресс сохранён.")
+            else:
+                print("⚠️ Прогресс не сохранён. Последние действия потеряны.")
             print("\n👋 До свидания!")
             break
         

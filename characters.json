@@ -1,20 +1,21 @@
 {
     "player1": {
         "name": "Royals",
-        "level": 19,
+        "level": 26,
         "class": "Earth-Mage",
-        "health": 440,
-        "mana": 80,
+        "health": 90,
+        "mana": 12,
         "stat_points": 0,
         "stats": {
             "strength": 10,
             "agility": 10,
             "intuition": 8,
-            "endurance": 25,
+            "endurance": 46,
             "intelligence": 8,
-            "wisdom": 18,
+            "wisdom": 32,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694548
     },
     "player2": {
         "name": "Zol",
@@ -31,7 +32,8 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694667
     },
     "player3": {
         "name": "Big Problem",
@@ -48,7 +50,8 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694731
     },
     "player4": {
         "name": "Tempuous",
@@ -65,7 +68,8 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694777
     },
     "player5": {
         "name": "Kartman",
@@ -82,7 +86,8 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694822
     },
     "player6": {
         "name": "White Rabbit",
@@ -99,7 +104,8 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694865
     },
     "player7": {
         "name": "Holo",
@@ -116,7 +122,8 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694912
     },
     "player8": {
         "name": "Маньяк какой то",
@@ -133,7 +140,8 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694953
     },
     "player9": {
         "name": "Cubarulit",
@@ -150,6 +158,43 @@
             "intelligence": 8,
             "wisdom": 8,
             "spirituality": 8
-        }
+        },
+        "last_activity_time": 1776074586.9694996
+    },
+    "player10": {
+        "name": "Heropontij",
+        "level": 11,
+        "class": "Warrior",
+        "health": 420,
+        "mana": 279,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        },
+        "last_activity_time": 1776074586.9695036
+    },
+    "player11": {
+        "name": "Тест без сохранения",
+        "level": 11,
+        "class": "Mage",
+        "health": 420,
+        "mana": 279,
+        "stat_points": 0,
+        "stats": {
+            "strength": 10,
+            "agility": 10,
+            "intuition": 8,
+            "endurance": 10,
+            "intelligence": 8,
+            "wisdom": 8,
+            "spirituality": 8
+        },
+        "last_activity_time": 1776074586.9695077
     }
 }

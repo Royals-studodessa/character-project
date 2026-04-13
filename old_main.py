@@ -1,5 +1,5 @@
 import utils
-from characters import (
+from for_delete_characters import (
     display_characters,
     add_character,
     del_character,
