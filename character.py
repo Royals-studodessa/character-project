@@ -38,6 +38,15 @@ class Character:
         self.learned_skills = []
         self.skill_points = 0
         self.active_effects = []
+        
+        self.equipment = {
+        "main_hand": None,   # Основное оружие (меч, дубина, лук, посох)
+        "off_hand": None,    # Щит, второй нож, книга заклинаний
+        "head": None,
+        "body": None,
+        "legs": None,
+        "accessory": None
+        }
 
         if char_class == "Newbie":
             self.learned_skills = ["basic_attack"]
@@ -413,3 +422,40 @@ class Character:
         ]
 
         print("--- Эффекты обработаны ---\n")
+
+    def equip_item(self, item):
+        return item.equip(self)
+
+    def unequip_item(self, slot_name):
+        item = self.equipment.get(slot_name)
+        if item:
+            return item.unequip(self)
+        print(f"⚠️ Слот {slot_name} пуст")
+        return False
+
+    def get_equipment_stats(self):
+        main = self.equipment.get("main_hand")
+        off = self.equipment.get("off_hand")
+        
+        attacks = 1  # По умолчанию 1 атака (правая рука)
+        passives = []
+        
+        # Если есть предмет в левой руке
+        if off:
+            if off.combat_props.get("is_shield"):
+                # Щит дает возможность блокировать и бить щитом (2-я атака)
+                attacks += 1  # <--- ЭТОЙ СТРОКИ НЕ ХВАТАЛО!
+                if off.combat_props.get("stun_chance", 0) > 0:
+                    passives.append("shield_stun")
+                    
+            elif off.combat_props.get("weapon_type") == "dagger":
+                # Второй нож тоже дает 2-ю атаку
+                attacks += 1
+                if off.combat_props.get("bleed_chance", 0) > 0:
+                    passives.append("dual_bleed")
+        
+        # Пассивка крита от класса (пока оставляем так)
+        if "Crit" in (self.char_class or ""):
+            passives.append("crit_passive")
+            
+        return {"num_attacks": attacks, "passives": passives}

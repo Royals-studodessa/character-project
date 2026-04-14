@@ -2,8 +2,8 @@
     "player1": {
         "name": "Royals",
         "level": 10,
-        "class": "Dodger",
-        "health": 385,
+        "class": "Critical",
+        "health": 366,
         "mana": 264,
         "stat_points": 0,
         "stats": {
@@ -15,18 +15,18 @@
             "wisdom": 34,
             "spirituality": 8
         },
-        "main_class": "Dodger",
+        "main_class": "Critical",
         "learned_skills": [
             "power_strike",
             "shield_bash"
         ],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9175272
     },
     "player2": {
         "name": "Zol",
         "level": 13,
         "class": "Tank",
-        "health": 446,
+        "health": 412,
         "mana": 309,
         "stat_points": 0,
         "stats": {
@@ -40,7 +40,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.917542
     },
     "player3": {
         "name": "Big Problem",
@@ -60,7 +60,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.917556
     },
     "player4": {
         "name": "Tempuous",
@@ -80,7 +80,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9175627
     },
     "player5": {
         "name": "Kartman",
@@ -100,7 +100,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9175723
     },
     "player6": {
         "name": "White Rabbit",
@@ -120,7 +120,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9175782
     },
     "player7": {
         "name": "Holo",
@@ -140,7 +140,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9175868
     },
     "player8": {
         "name": "Маньяк какой то",
@@ -160,7 +160,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9175928
     },
     "player9": {
         "name": "Cubarulit",
@@ -180,7 +180,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9175985
     },
     "player10": {
         "name": "Heropontij",
@@ -200,6 +200,6 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776169306.6931102
+        "last_activity_time": 1776182101.9176037
     }
 }

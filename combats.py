@@ -104,85 +104,103 @@ class CombatSession:
                 self._execute_action(p2, p1, act2, act1)
 
         print("⚔️ --- ХОД ЗАВЕРШЁН ---\n")
+        
+        for p in self.players.values():
+            p.tick_effects()
+            
         self.actions.clear()
         self.turn_start_time = time.time()
 
-    # <-- ВАЖНО: Этот метод должен быть ВНУТРИ класса CombatSession (с отступом)
     def _execute_action(self, attacker, defender, att_act, def_act):
-        """Расчёт урона с учётом МНОЖЕСТВЕННЫХ атак"""
-
+        """Полный расчёт боя: Зоны, Урон, Крит, Пассивки"""
         if att_act["action_type"] == "skip":
             return
 
         print(f"\n🎯 {attacker.name} ({attacker.char_class}) атакует {defender.name}...")
-
-        # Определяем, сколько атак будет
-        attack_zones = list(att_act["attack_zones"])
-        num_attacks = len(attack_zones)
-
-        # Если зон нет — ставим одну пустую атаку
-        if num_attacks == 0:
+        
+        # 1. Получаем статы экипировки (сколько атак можно сделать)
+        eq_stats = attacker.get_equipment_stats()
+        max_attacks = eq_stats["num_attacks"]
+        
+        # 2. Берём зоны атаки (не больше, чем позволяет оружие)
+        attack_zones = list(att_act["attack_zones"])[:max_attacks]
+        if not attack_zones:
             attack_zones = [None]
-            num_attacks = 1
-
-        # === ЦИКЛ ПО ВСЕМ АТАКАМ ===
+            
+        # 3. Цикл по ударам
         for i, zone in enumerate(attack_zones, 1):
-            if num_attacks > 1:
-                print(f"\n  ⚔️ Атака #{i} (зона: {zone})")
-
-            # 1. Проверяем блок
-            is_blocked = False
-            if zone and zone in def_act["block_zones"]:
-                is_blocked = True
-                print(f"  🛡️ {defender.name} заблокировал зону '{zone}'!")
-            elif zone:
-                print(f"  💥 Попадание в открытую зону '{zone}'!")
-
-            # 2. Расчёт урона
-            base_damage = attacker.damage
-
-            # Если атак несколько (2 ножа/меча) → делим урон пополам
-            if num_attacks == 2:
-                base_damage = int(base_damage * 0.5)
-
-            # Если это ВТОРАЯ атака Танка (щит) → 20% урона
-            if num_attacks == 2 and "Tank" in (attacker.char_class or "") and i == 2:
-                base_damage = int(attacker.damage * 0.2)
-                print(f"  🛡️ Удар щитом на {base_damage} урона")
-
-            # Применяем множители
+            print(f"\n  ⚔️ Атака #{i} (зона: {zone})")
+            
+            # --- Проверка попадания в блок ---
+            is_blocked = zone in def_act["block_zones"] if zone else False
             if is_blocked:
-                final_dmg = int(base_damage * 0.4)
+                print(f"  🛡️ {defender.name} заблокировал зону '{zone}'!")
             else:
-                final_dmg = base_damage
+                print(f"  💥 Попадание в открытую зону '{zone}'!")
+            
+            # --- Расчёт базового урона ---
+            base_strike = attacker.damage
+            off_hand = attacker.equipment.get("off_hand")
 
-            # 3. Наносим урон
+            # Если атак 2 (двуручность или щит)
+            if max_attacks == 2:
+                # Логика ЩИТА: 2-я атака = 20% урона
+                if i == 2 and off_hand and off_hand.combat_props.get("is_shield"):
+                    base_strike = int(attacker.damage * 0.2)
+                    print(f"  🛡️ Удар щитом (20% от базы = {base_strike})")
+                # Логика ДВУХ ОРУЖИЙ (ножи/мечи): делим урон пополам (50%)
+                else:
+                    base_strike = int(attacker.damage * 0.5)
+            
+            final_dmg = 0
+            log_msg = ""
+            
+            # --- Бросок на КРИТ ---
+            is_crit = "crit_passive" in eq_stats["passives"] and random.random() < 0.25
+            
+            # --- ФИНАЛЬНАЯ МАТЕМАТИКА ---
+            if is_blocked:
+                if is_crit:
+                    final_dmg = base_strike  # Крит через блок: x1
+                    log_msg = "⚡ КРИТ пробил блок!"
+                elif "ranged_pierce" in eq_stats["passives"]:
+                    final_dmg = int(base_strike * 0.5)  # Стрелок
+                    log_msg = "🏹 Стрела прошивает блок!"
+                else:
+                    final_dmg = 0  # Обычный блок (Танк/Воин)
+                    log_msg = "🛡️ Блок полностью поглотил удар."
+            else:
+                if is_crit:
+                    final_dmg = int(base_strike * 2.0)  # Крит в открытую: x2
+                    log_msg = "⚡ КРИТИЧЕСКИЙ УДАР!"
+                else:
+                    final_dmg = base_strike
+                    log_msg = "💥 Прямое попадание."
+            
+            # ==========================================
+            # 🔴 ВЫВОД РЕЗУЛЬТАТА (Этого не было в логе!)
+            # ==========================================
+            print(f"  {log_msg} Итоговый урон: {final_dmg}")
+            
             if final_dmg > 0:
                 defender.take_damage(final_dmg)
-
-            # 4. ПРОВЕРКА ПАССИВОК (для каждой атаки отдельно!)
-
-            # Dodger: кровотечение (если НЕ в блок)
-            if "Dodger" in (attacker.char_class or "") and not is_blocked:
-                if random.random() < 0.95:  # 5% шанс
+            else:
+                print(f"  🛡️ Урон полностью поглощён!")
+            
+            # --- ПАССИВКИ ---
+            # 1. Кровотечение (Доджер / 2 ножа) - только в ОТКРЫТУЮ зону
+            if "dual_bleed" in eq_stats["passives"] and not is_blocked:
+                if random.random() < 0.05:
                     print(f"  🩸 Сработала пассивка 'Кровотечение'!")
                     bleed = StatusEffect("Bleed", 5, "damage", 2.5)
                     defender.apply_status(bleed)
-
-            # Tank: оглушение (если ВТОРАЯ атака щитом и НЕ в блок)
-            if "Tank" in (attacker.char_class or "") and i == 2 and not is_blocked:
-                if random.random() < 0.20:  # 20% шанс
+                    
+            # 2. Оглушение (Танк / Щит) - только ВТОРЫМ ударом и в ОТКРЫТУЮ
+            if "shield_stun" in eq_stats["passives"] and max_attacks == 2 and i == 2 and not is_blocked:
+                if random.random() < 0.20:
                     print(f"  💥 Удар щитом оглушил!")
                     stun = StatusEffect("Stun", 1, "control", 0)
                     defender.apply_status(stun)
 
-            # Crit: пробитие блока (50%)
-            if "Crit" in (attacker.char_class or "") and is_blocked:
-                if random.random() < 0.05:  # 50% шанс пробить блок
-                    print(f"  ⚡ Критический удар пробил блок!")
-                    # Наносим дополнительный урон
-                    crit_dmg = int(attacker.damage * 0.5)
-                    defender.take_damage(crit_dmg)
-
-        # В конце — тик эффектов
-        defender.tick_effects()
+        # Тикаем эффекты в конце хода
+        # defender.tick_effects()

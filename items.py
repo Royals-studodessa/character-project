@@ -1,38 +1,41 @@
 # конструктор предметов
 
 class Item:
-
-    def __init__(self, name, weight, value):
+    """Базовый класс для всех предметов"""
+    def __init__(self, name, weight, value, slot="inventory", combat_props=None):
         self.name = name
         self.weight = weight
         self.value = value
+        self.slot = slot  # Куда можно экипировать: "main_hand", "off_hand", "body" и т.д.
+        self.combat_props = combat_props or {}  # {"is_shield": True, "stun_chance": 0.2}
 
     def __str__(self):
         return f"📦 {self.name} | Вес: {self.weight} | Цена: {self.value}"
 
     def display(self):
-        print(f"Персонаж подобрал предмет {self.name}, вес предмета {self.weight}, цена предмета {self.value}")
-
+        print(f"📦 Предмет: {self.name}, Вес: {self.weight}, Цена: {self.value}")
+        
     def to_dict(self):
         return {
             "name": self.name,
             "weight": self.weight,
             "value": self.value,
+            "slot": self.slot,
+            "combat_props": self.combat_props
         }
 
     def apply_discount(self, percent):
         old_value = self.value
         new_value = old_value * (percent / 100)
+        print(f"💰 Цена со скидкой: {old_value - new_value}")
 
-        print(f" цена со скидкой будет {old_value - new_value}")
 
-
-# --- МЕЧ ---
 class Weapon(Item):
-    def __init__(self, name, weight, value, damage_bonus):
-        # super() вызывает __init__ от родителя (Item)
-        super().__init__(name, weight, value)
-        self.damage_bonus = damage_bonus  # Уникальное свойство оружия
+    """Класс оружия. Наследуется от Item"""
+    def __init__(self, name, weight, value, damage_bonus, slot="main_hand", combat_props=None):
+        # Передаём все аргументы родительскому классу
+        super().__init__(name, weight, value, slot, combat_props)
+        self.damage_bonus = damage_bonus  # Бонус к урону от этого оружия
 
     def use(self, target):
         print(f"⚔️ Ты ударил {target.name} мечом '{self.name}' на {self.damage_bonus} урона!")
@@ -40,11 +43,11 @@ class Weapon(Item):
 
     def equip(self, character):
         character._equip_damage_bonus += self.damage_bonus
-        print(f"⚔️ Экипирован {self.name} (+{self.damage_bonus} урона)")
+        print(f"⚔️ Экипирован: {self.name} (+{self.damage_bonus} урона)")
 
     def unequip(self, character):
         character._equip_damage_bonus -= self.damage_bonus
-        print(f"🔄 Снят {self.name} (-{self.damage_bonus} урона)")
+        print(f"🔄 Снят: {self.name} (-{self.damage_bonus} урона)")
 
 
 # --- ЗЕЛЬЕ ---

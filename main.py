@@ -5,6 +5,8 @@ from item_manager import ItemManager
 from progression import SUBCLASSES, MAIN_CLASSES
 from combats import CombatAction, CombatSession
 import time
+from items import Weapon
+from character import Character
 
 # 2. КОНСТАНТЫ
 TITLE = "=== CHARACTER DATABASE ==="
@@ -114,21 +116,35 @@ def main():
     print("🎮 НАЧИНАЕМ ТЕСТ БОЕВОЙ СИСТЕМЫ")
     print("=" * 60)
 
-    p1 = manager.characters.get("player1")  # Royals (Dodger)
-    p2 = manager.characters.get("player2")  # Zol (Tank)
+    # p1 = manager.characters.get("player1")  # Royals (Dodger)
+    # p2 = manager.characters.get("player2")  # Zol (Tank)
+    
+    shield = Weapon("Деревянный щит", 3, 30, 0, 
+                slot="off_hand", 
+                combat_props={"is_shield": True, "stun_chance": 0.2})
+                
+    dagger2 = Weapon("Второй нож", 1, 20, 5, 
+                    slot="off_hand", 
+                    combat_props={"weapon_type": "dagger", "bleed_chance": 0.05})
+    
+    tank_no_shield = Character("TankEmpty", 10, "Tank", 600, 100)
+    tank_with_shield = Character("TankFull", 10, "Tank", 600, 100)
+    
+    tank_with_shield.equipment["main_hand"] = Weapon("Дубина", 4, 40, 15)
+    tank_with_shield.equipment["off_hand"] = Weapon("Щит", 3, 30, 0, slot="off_hand", combat_props={"is_shield": True, "stun_chance": 0.2})
 
-    if p1 and p2:
+    if tank_no_shield and tank_with_shield:
         # Создаём сессию, сразу чистим имена от возможных пробелов
-        session = CombatSession(p1, p2, timeout_sec=3)
-        session.players = {p1.name.strip(): p1, p2.name.strip(): p2}  # Фикс ключей
+        session = CombatSession(tank_no_shield, tank_with_shield, timeout_sec=3)
+        session.players = {tank_no_shield.name.strip(): tank_no_shield, tank_with_shield.name.strip(): tank_with_shield}  # Фикс ключей
 
-        print(f"\n👤 Игрок 1: {p1.name.strip()} (Класс: {p1.char_class})")
-        print(f"👤 Игрок 2: {p2.name.strip()} (Класс: {p2.char_class})")
+        print(f"\n👤 Игрок 1: {tank_no_shield.name.strip()} (Класс: {tank_no_shield.char_class})")
+        print(f"👤 Игрок 2: {tank_with_shield.name.strip()} (Класс: {tank_with_shield.char_class})")
 
         # 1️⃣ Отправляем ход Игрока 1
         print("\n📤 Отправляю ход для Игрока 1...")
         ok1, msg1 = session.submit_action(
-            player_name=p1.name.strip(),
+            player_name=tank_no_shield.name.strip(),
             action_type="attack",
             attack_zones=["head", "torso"],
             block_zones=["torso"],
@@ -139,7 +155,7 @@ def main():
         # 2️⃣ Отправляем ход Игрока 2
         print("\n📤 Отправляю ход для Игрока 2...")
         ok2, msg2 = session.submit_action(
-            player_name=p2.name.strip(),
+            player_name=tank_with_shield.name.strip(),
             action_type="attack",
             attack_zones=["torso", "legs"],
             block_zones=["head", "legs"],
