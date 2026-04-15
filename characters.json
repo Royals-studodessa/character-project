@@ -20,7 +20,7 @@
             "power_strike",
             "shield_bash"
         ],
-        "last_activity_time": 1776235335.7001886
+        "last_activity_time": 1776235974.2990987
     },
     "player2": {
         "name": "Zol",
@@ -40,7 +40,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002048
+        "last_activity_time": 1776235974.2991145
     },
     "player3": {
         "name": "Big Problem",
@@ -60,7 +60,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002194
+        "last_activity_time": 1776235974.2991292
     },
     "player4": {
         "name": "Tempuous",
@@ -80,7 +80,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002296
+        "last_activity_time": 1776235974.2991395
     },
     "player5": {
         "name": "Kartman",
@@ -100,7 +100,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002368
+        "last_activity_time": 1776235974.299147
     },
     "player6": {
         "name": "White Rabbit",
@@ -120,7 +120,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.700246
+        "last_activity_time": 1776235974.2991562
     },
     "player7": {
         "name": "Holo",
@@ -140,7 +140,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002525
+        "last_activity_time": 1776235974.2991629
     },
     "player8": {
         "name": "Маньяк какой то",
@@ -160,7 +160,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002583
+        "last_activity_time": 1776235974.299169
     },
     "player9": {
         "name": "Cubarulit",
@@ -180,7 +180,7 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002673
+        "last_activity_time": 1776235974.299178
     },
     "player10": {
         "name": "Heropontij",
@@ -200,6 +200,6 @@
         },
         "main_class": null,
         "learned_skills": [],
-        "last_activity_time": 1776235335.7002764
+        "last_activity_time": 1776235974.2991874
     }
 }

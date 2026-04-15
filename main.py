@@ -7,6 +7,7 @@ from combats import CombatAction, CombatSession
 import time
 from items import Weapon
 from character import Character
+from battle_test import  run_auto_battle_test, run_mage_test, create_test_characters
 
 # 2. КОНСТАНТЫ
 TITLE = "=== CHARACTER DATABASE ==="
@@ -112,34 +113,12 @@ def main():
         # ========================================
         # ТЕСТОВАЯ ПРОВЕРКА БОЕВОЙ СИСТЕМЫ
         # ========================================
+    run_auto_battle_test(max_turns=10)
+    
 
-    # p1 = manager.characters.get("player1")  # Royals (Dodger)
-    # p2 = manager.characters.get("player2")  # Zol (Tank)
-    print("\n🧪 ТЕСТ: Авто-цикл + Стан + Кровотечение")
-    
-    # Создаём персонажей
-    p1 = Character("Dodger", 10, "Dodger", 300, 100)
-    p2 = Character("Tank", 10, "Tank", 350, 100)
-    
-    # Даём танку щит, а доджеру 2 ножа (для кровотечения)
-    from items import Weapon
-    p1.equipment["main_hand"] = Weapon("Нож 1", 1, 10, 20, combat_props={"weapon_type":"dagger", "bleed_chance":0.1})
-    p1.equipment["off_hand"] = Weapon("Нож 2", 1, 10, 20, combat_props={"weapon_type":"dagger", "bleed_chance":0.1})
-    p2.equipment["main_hand"] = Weapon("Дубина", 4, 30, 25)
-    p2.equipment["off_hand"] = Weapon("Щит", 3, 30, 0, slot="off_hand", combat_props={"is_shield":True, "stun_chance":0.3})
-
-    session = CombatSession(p1, p2, timeout_sec=1)
-    
-    # Имитируем, что оба выбрали атаку
-    session.submit_action(p1.name, "attack", ["head", "legs"], ["torso"], [], None)
-    session.submit_action(p2.name, "attack", ["torso", "head"], ["head", "torso"], [], None)
-    
-    # ЗАПУСКАЕМ АВТО-БОЙ (не нужно вызывать resolve_turn вручную!)
-    session.start_battle(max_turns=10)
-
-    # ========================================
-    # КОНЕЦ ТЕСТА
-    # ========================================
+        # ========================================
+        # КОНЕЦ ТЕСТА
+        # ========================================
 
     while True:
         show_menu()

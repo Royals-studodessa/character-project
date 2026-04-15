@@ -410,18 +410,18 @@ class Character:
         print(f"🩸 {self.name} получает эффект: {effect.name} на {effect.duration} ходов!")
 
     def tick_effects(self):
-        """Вызывается в конце хода для обработки ядов/кровотечений"""
+        """
+        Тикает эффекты. Делегирует логику самому эффекту.
+        Возвращает только те эффекты, которые еще активны (tick вернул True).
+        """
         if not self.active_effects:
             return
 
-        print(f"\n--- ⏳ Проверка эффектов на {self.name} ---")
-
+        # Твой код, он отличный!
         self.active_effects = [
             effect for effect in self.active_effects
-            if effect.tick(self)  # ← Вызываем tick у эффекта. Если вернет True, он останется.
+            if effect.tick(self)  # Эффект сам считает урон и уменьшает длительность
         ]
-
-        print("--- Эффекты обработаны ---\n")
 
     def equip_item(self, item):
         return item.equip(self)
