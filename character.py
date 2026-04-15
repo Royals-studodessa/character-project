@@ -459,3 +459,15 @@ class Character:
             passives.append("crit_passive")
             
         return {"num_attacks": attacks, "passives": passives}
+    
+    @property
+    def is_alive(self):
+        """Возвращает True, если HP > 0"""
+        return self._current_health > 0
+
+    def is_stunned(self):
+        """Проверяет, есть ли активный стан длительностью > 0"""
+        for eff in self.active_effects:
+            if eff.name == "Stun" and eff.duration > 0:
+                return True
+        return False

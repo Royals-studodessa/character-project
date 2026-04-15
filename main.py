@@ -112,70 +112,31 @@ def main():
         # ========================================
         # ТЕСТОВАЯ ПРОВЕРКА БОЕВОЙ СИСТЕМЫ
         # ========================================
-    print("\n" + "=" * 60)
-    print("🎮 НАЧИНАЕМ ТЕСТ БОЕВОЙ СИСТЕМЫ")
-    print("=" * 60)
 
     # p1 = manager.characters.get("player1")  # Royals (Dodger)
     # p2 = manager.characters.get("player2")  # Zol (Tank)
+    print("\n🧪 ТЕСТ: Авто-цикл + Стан + Кровотечение")
     
-    shield = Weapon("Деревянный щит", 3, 30, 0, 
-                slot="off_hand", 
-                combat_props={"is_shield": True, "stun_chance": 0.2})
-                
-    dagger2 = Weapon("Второй нож", 1, 20, 5, 
-                    slot="off_hand", 
-                    combat_props={"weapon_type": "dagger", "bleed_chance": 0.05})
+    # Создаём персонажей
+    p1 = Character("Dodger", 10, "Dodger", 300, 100)
+    p2 = Character("Tank", 10, "Tank", 350, 100)
     
-    tank_no_shield = Character("TankEmpty", 10, "Tank", 600, 100)
-    tank_with_shield = Character("TankFull", 10, "Tank", 600, 100)
+    # Даём танку щит, а доджеру 2 ножа (для кровотечения)
+    from items import Weapon
+    p1.equipment["main_hand"] = Weapon("Нож 1", 1, 10, 20, combat_props={"weapon_type":"dagger", "bleed_chance":0.1})
+    p1.equipment["off_hand"] = Weapon("Нож 2", 1, 10, 20, combat_props={"weapon_type":"dagger", "bleed_chance":0.1})
+    p2.equipment["main_hand"] = Weapon("Дубина", 4, 30, 25)
+    p2.equipment["off_hand"] = Weapon("Щит", 3, 30, 0, slot="off_hand", combat_props={"is_shield":True, "stun_chance":0.3})
+
+    session = CombatSession(p1, p2, timeout_sec=1)
     
-    tank_with_shield.equipment["main_hand"] = Weapon("Дубина", 4, 40, 15)
-    tank_with_shield.equipment["off_hand"] = Weapon("Щит", 3, 30, 0, slot="off_hand", combat_props={"is_shield": True, "stun_chance": 0.2})
+    # Имитируем, что оба выбрали атаку
+    session.submit_action(p1.name, "attack", ["head", "legs"], ["torso"], [], None)
+    session.submit_action(p2.name, "attack", ["torso", "head"], ["head", "torso"], [], None)
+    
+    # ЗАПУСКАЕМ АВТО-БОЙ (не нужно вызывать resolve_turn вручную!)
+    session.start_battle(max_turns=10)
 
-    if tank_no_shield and tank_with_shield:
-        # Создаём сессию, сразу чистим имена от возможных пробелов
-        session = CombatSession(tank_no_shield, tank_with_shield, timeout_sec=3)
-        session.players = {tank_no_shield.name.strip(): tank_no_shield, tank_with_shield.name.strip(): tank_with_shield}  # Фикс ключей
-
-        print(f"\n👤 Игрок 1: {tank_no_shield.name.strip()} (Класс: {tank_no_shield.char_class})")
-        print(f"👤 Игрок 2: {tank_with_shield.name.strip()} (Класс: {tank_with_shield.char_class})")
-
-        # 1️⃣ Отправляем ход Игрока 1
-        print("\n📤 Отправляю ход для Игрока 1...")
-        ok1, msg1 = session.submit_action(
-            player_name=tank_no_shield.name.strip(),
-            action_type="attack",
-            attack_zones=["head", "torso"],
-            block_zones=["torso"],
-            skills=None
-        )
-        print(f"   ✅ Результат: {msg1}")
-
-        # 2️⃣ Отправляем ход Игрока 2
-        print("\n📤 Отправляю ход для Игрока 2...")
-        ok2, msg2 = session.submit_action(
-            player_name=tank_with_shield.name.strip(),
-            action_type="attack",
-            attack_zones=["torso", "legs"],
-            block_zones=["head", "legs"],
-            skills=None
-        )
-        print(f"   ✅ Результат: {msg2}")
-
-        # 3️⃣ Запускаем расчёт только если ОБА хода приняты
-        if ok1 and ok2:
-            print("\n⏱️ Имитируем прошедшее время (таймаут)...")
-            session.turn_start_time = time.time() - 5  # Прошло 5 сек > timeout_sec=3
-
-            print("⚙️ Запускаю resolve_turn()...")
-            session.resolve_turn()
-        else:
-            print("❌ БОЙ НЕ НАЧАЛСЯ! Один из ходов отклонён. Проверь вывод выше.")
-    else:
-        print("❌ Персонажи player1 или player2 не найдены в базе!")
-
-    print("=" * 60 + "\n")
     # ========================================
     # КОНЕЦ ТЕСТА
     # ========================================
